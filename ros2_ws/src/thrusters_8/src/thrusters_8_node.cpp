@@ -13,8 +13,8 @@ Thrusters8Node::Thrusters8Node() : Node("thrusters_8") {
     serial_port_ = open(port.c_str(), O_RDWR);
     termios tty;
     tcgetattr(serial_port_, &tty);
-    cfsetospeed(&tty, B9600);
-    cfsetispeed(&tty, B9600);
+    cfsetospeed(&tty, B115200);
+    cfsetispeed(&tty, B115200);
     tty.c_cflag |= (CLOCAL | CREAD);
     tty.c_cflag &= ~PARENB;
     tty.c_cflag &= ~CSTOPB;
