@@ -1,4 +1,4 @@
-# Thruster Control System - KRBAI SAUVC 2026
+# (DEPRECATED) Thruster Control System - KRBAI SAUVC 2026
 
 Sistem ini dirancang untuk mengendalikan robot bawah air dengan konfigurasi 8 motor (thruster). Sistem bekerja dengan memproses input dari joystick, mengubahnya menjadi koordinat pergerakan (Twist), dan mengirimkan perintah kecepatan motor ke mikrokontroler melalui komunikasi serial.
 
