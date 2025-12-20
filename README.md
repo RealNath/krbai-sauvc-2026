@@ -28,6 +28,7 @@
    ```
 4. Run the main node:
    ```bash
+   source /opt/ros/humble/setup.bash
    ros2 run eggplant foobar
    ```
 
