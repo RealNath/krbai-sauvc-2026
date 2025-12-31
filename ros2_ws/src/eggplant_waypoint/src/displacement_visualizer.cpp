@@ -21,16 +21,33 @@ public:
 private:
     void twist_callback(const geometry_msgs::msg::Twist::SharedPtr msg) {
         rclcpp::Time current_time = this->now();
+        
+        // Cek apakah ini callback pertama
+        static bool first_run = true;
+        if (first_run) {
+            last_time_ = current_time;
+            first_run = false;
+            
+            this->publish_current_pose(current_time); 
+            return;
+        }
+
         double dt = (current_time - last_time_).seconds();
         last_time_ = current_time;
 
+        // Batasi dt jika terjadi delay yang tidak wajar (safety)
+        // if (dt > 0.5) dt = 0.05; 
+
         // 1. Integrate position (Dead Reckoning)
-        // Note: For underwater robots, yaw affects X/Y movement direction
         x_ += (msg->linear.x * cos(yaw_) - msg->linear.y * sin(yaw_)) * dt;
         y_ += (msg->linear.x * sin(yaw_) + msg->linear.y * cos(yaw_)) * dt;
         z_ += msg->linear.z * dt;
         yaw_ += msg->angular.z * dt;
 
+        this->publish_current_pose(current_time);
+    }
+
+    void publish_current_pose(const rclcpp::Time & current_time) {
         // 2. Create Odometry Message
         auto odom = nav_msgs::msg::Odometry();
         odom.header.stamp = current_time;
@@ -51,6 +68,10 @@ private:
         path_msg_.poses.push_back(pose);
         path_msg_.header.stamp = current_time;
         pub_path_->publish(path_msg_);
+
+        // Log time and last pose
+        RCLCPP_INFO(this->get_logger(), "Time: %.2f s, Position: (%.2f, %.2f, %.2f), Yaw: %.2f rad",
+                        current_time.seconds(), x_, y_, z_, yaw_);
     }
 
     rclcpp::Subscription<geometry_msgs::msg::Twist>::SharedPtr sub_twist_;
