@@ -6,9 +6,9 @@ class GateDetector:
         # HSV Color Ranges
         # Adjust these based on actual underwater footage
         self.colors = {
-            'red_lower1': np.array([0, 50, 50]),
-            'red_upper1': np.array([10, 255, 255]),
-            'red_lower2': np.array([170, 50, 50]),
+            'red_lower1': np.array([0, 120, 50]),
+            'red_upper1': np.array([8, 255, 255]),
+            'red_lower2': np.array([172, 120, 50]),
             'red_upper2': np.array([180, 255, 255]),
             'green_lower': np.array([40, 50, 50]),
             'green_upper': np.array([90, 255, 255])
