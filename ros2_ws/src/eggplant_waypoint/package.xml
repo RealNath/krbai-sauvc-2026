@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
-  <name>eggplant_controller</name>
+  <name>eggplant_waypoint</name>
   <version>0.0.0</version>
-  <description>KRBAI SAUVC 2026 Thruster Control System</description>
+  <description>Waypoint sequencer for underwater robot autonomous movement.</description>
   <maintainer email="karolyangqian14@gmail.com">karol</maintainer>
   <license>Apache-2.0</license>
 
@@ -11,10 +11,14 @@
 
   <depend>rclcpp</depend>
   <depend>geometry_msgs</depend>
-  <depend>sensor_msgs</depend>
-  <depend>std_msgs</depend>
+  <depend>std_srvs</depend>
+  <depend>yaml-cpp</depend>
+  <depend>nav_msgs</depend>
   <depend>tf2</depend>
   <depend>tf2_geometry_msgs</depend>
+
+  <test_depend>ament_lint_auto</test_depend>
+  <test_depend>ament_lint_common</test_depend>
 
   <export>
     <build_type>ament_cmake</build_type>
