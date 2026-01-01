@@ -24,7 +24,7 @@ def main():
         # Uncomment below to see how the mask looks (debug)
         # cv2.imshow('Processed', processed_img)
 
-        direction, error = check_gate_alignment(results['red_post'], results['green_post'])
+        direction, error = detector.check_gate_alignment(data['red_post'], data['green_post'])
         print(f"Status: {direction} (Diff: {error})")
         
         if cv2.waitKey(1) & 0xFF == ord('q'):

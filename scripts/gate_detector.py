@@ -95,7 +95,7 @@ class GateDetector:
 
     # Kalau bagian kiri gate (merah) kelihatan lebih tinggi, bot di kiri
     # Kalau bagian kanan gate (hijau) kelihatan lebih tinggi, bot di kanan
-    def check_gate_alignment(red_bbox, green_bbox, height_threshold=5):
+    def check_gate_alignment(self, red_bbox, green_bbox, height_threshold=5):
         if red_bbox is None or green_bbox is None:
             return "unknown", 0.0
 
