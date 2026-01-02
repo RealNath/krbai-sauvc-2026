@@ -14,9 +14,17 @@ find_package(yaml-cpp REQUIRED)
 find_package(nav_msgs REQUIRED)
 find_package(tf2 REQUIRED)
 find_package(tf2_geometry_msgs REQUIRED)
+find_package(sensor_msgs REQUIRED)
 
 add_executable(displacement_visualizer src/displacement_visualizer.cpp)
-ament_target_dependencies(displacement_visualizer rclcpp geometry_msgs nav_msgs tf2 tf2_geometry_msgs)
+ament_target_dependencies(displacement_visualizer
+  rclcpp
+  geometry_msgs
+  sensor_msgs
+  nav_msgs
+  tf2
+  tf2_geometry_msgs
+)
 
 # Add Executable
 add_executable(waypoint_sequencer src/waypoint_sequencer.cpp)

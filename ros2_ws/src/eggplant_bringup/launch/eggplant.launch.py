@@ -8,7 +8,7 @@ from launch_ros.actions import PushRosNamespace
 def generate_launch_description():
     # 1. Declare Global Arguments
     port_arg = DeclareLaunchArgument(
-        'port', default_value='/dev/ttyUSB0',
+        'port', default_value='/dev/ttyACM0',
         description='Serial port for the robot'
     )
     

@@ -37,7 +37,14 @@ target_include_directories(
   PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>)
-ament_target_dependencies(serial_manager rclcpp std_msgs sensor_msgs)
+ament_target_dependencies(serial_manager
+  rclcpp
+  std_msgs
+  sensor_msgs
+  geometry_msgs
+  tf2
+  tf2_geometry_msgs
+)
 
 # --- Joy to Twist Node ---
 add_executable(joy_to_twist_node src/joy_to_twist_node.cpp)

@@ -6,13 +6,13 @@
 #include <std_msgs/msg/bool.hpp>
 #include <std_msgs/msg/float32.hpp>
 #include <sensor_msgs/msg/imu.hpp>
-#include <geometry_msgs/msg/vector3.hpp>
+#include <tf2_geometry_msgs/tf2_geometry_msgs.hpp>
 #include <string>
 #include <vector>
+#include <sstream>
 #include <fcntl.h>
 #include <termios.h>
 #include <unistd.h>
-#include <sstream>
 
 class SerialManager : public rclcpp::Node {
 public:
@@ -22,13 +22,15 @@ public:
 private:
     void motor_callback(const std_msgs::msg::Float32MultiArray::SharedPtr msg);
     void read_serial();
+    void parse_line(const std::string &line);
     
     int serial_port_;
+    std::stringstream buffer_stream_;
+    
     rclcpp::Subscription<std_msgs::msg::Float32MultiArray>::SharedPtr sub_motors_;
     rclcpp::Publisher<std_msgs::msg::Bool>::SharedPtr pub_status_;
     rclcpp::Publisher<std_msgs::msg::Float32>::SharedPtr pub_depth_;
     rclcpp::Publisher<sensor_msgs::msg::Imu>::SharedPtr pub_imu_;
-    rclcpp::Publisher<geometry_msgs::msg::Vector3>::SharedPtr pub_euler_;
     rclcpp::TimerBase::SharedPtr timer_;
 };
 

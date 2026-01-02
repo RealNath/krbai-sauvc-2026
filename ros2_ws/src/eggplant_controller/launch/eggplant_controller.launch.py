@@ -5,7 +5,7 @@ from launch.substitutions import LaunchConfiguration
 
 def generate_launch_description():
     return LaunchDescription([
-        DeclareLaunchArgument('port', default_value='/dev/ttyUSB0'),
+        DeclareLaunchArgument('port', default_value='/dev/ttyACM0'),
         DeclareLaunchArgument('balancing', default_value='false'),
 
         Node(
