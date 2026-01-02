@@ -12,7 +12,7 @@
 
 ## Getting Started
 
-### ROS2
+### ROS2 - Ground Station
 
 1. Navigate to the workspace:
    ```bash
@@ -29,7 +29,7 @@
 4. Run the main node:
    ```bash
    source /opt/ros/humble/setup.bash
-   ros2 run eggplant foobar
+   ros2 launch eggplant_bringup eggplant.launch.py port:=/dev/ttyACM0 mission:=mission.yaml
    ```
 
 ### Arduino
