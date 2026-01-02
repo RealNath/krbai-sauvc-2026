@@ -8,48 +8,30 @@ Thrusters8Kinematics::Thrusters8Kinematics() : Node("thrusters_8_kinematics") {
 
     subscription_ = this->create_subscription<geometry_msgs::msg::Twist>(
         "cmd_vel", 10, std::bind(&Thrusters8Kinematics::twist_callback, this, std::placeholders::_1));
-
-    imu_sub_ = this->create_subscription<sensor_msgs::msg::Imu>(
-        "imu", 10, std::bind(&Thrusters8Kinematics::imu_callback, this, std::placeholders::_1));
-
+    sub_euler_ = this->create_subscription<geometry_msgs::msg::Vector3>(
+        "imu/euler", 10, std::bind(&Thrusters8Kinematics::euler_callback, this, std::placeholders::_1));
     publisher_ = this->create_publisher<std_msgs::msg::Float32MultiArray>("motors_vel", 10);
 }
 
-void Thrusters8Kinematics::imu_callback(const sensor_msgs::msg::Imu::SharedPtr msg) {
-    // Only process PID if balancing is enabled
-    if (!this->get_parameter("balancing").as_bool()) return;
-
-    // Convert Quaternion to Euler RPY
-    tf2::Quaternion q(
-        msg->orientation.x,
-        msg->orientation.y,
-        msg->orientation.z,
-        msg->orientation.w);
-    tf2::Matrix3x3 m(q);
-    double r, p, y;
-    m.getRPY(r, p, y);
-
-    current_roll_ = static_cast<float>(r);
-    current_pitch_ = static_cast<float>(p);
-
-    float d_roll = current_roll_ - last_roll_;
-    float d_pitch = current_pitch_ - last_pitch_;
-
-    float kp = this->get_parameter("kp_balancing").as_double();
-    float kd = this->get_parameter("kd_balancing").as_double();
-
-    // PD Control: Target is 0.0 for both roll and pitch
-    roll_correction_ = -(current_roll_ * kp) - (d_roll * kd);
-    pitch_correction_ = -(current_pitch_ * kp) - (d_pitch * kd);
-
-    last_roll_ = current_roll_;
-    last_pitch_ = current_pitch_;
+void Thrusters8Kinematics::euler_callback(const geometry_msgs::msg::Vector3::SharedPtr msg) {
+    current_roll_ = msg->x;
+    current_pitch_ = msg->y;
+    current_yaw_ = msg->z;
 }
 
 void Thrusters8Kinematics::twist_callback(const geometry_msgs::msg::Twist::SharedPtr msg) {
     float x = msg->linear.x * K_X;
     float y = msg->linear.y * K_Y;
     float z = msg->linear.z * K_Z;
+    
+    // Stabilization gains (assuming ~45 degrees tilt = max correction)
+    float K_STAB = 500.0f / 45.0f;
+
+    // Apply stabilization to Roll and Pitch (Angle Mode)
+    // Command sets target angle, IMU provides feedback
+    float roll = (msg->angular.x * K_ROLL) - (current_roll_ * K_STAB);
+    float pitch = (msg->angular.y * K_PITCH) - (current_pitch_ * K_STAB);
+    
     float yaw = msg->angular.z * K_YAW;
 
     float roll, pitch;

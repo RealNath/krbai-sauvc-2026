@@ -4,6 +4,7 @@
 #include <rclcpp/rclcpp.hpp>
 #include <geometry_msgs/msg/twist.hpp>
 #include <sensor_msgs/msg/imu.hpp>
+#include <geometry_msgs/msg/vector3.hpp>
 #include <std_msgs/msg/float32_multi_array.hpp>
 #include <tf2/LinearMath/Quaternion.h>
 #include <tf2/LinearMath/Matrix3x3.h>
@@ -16,13 +17,15 @@ public:
 
 private:
     void twist_callback(const geometry_msgs::msg::Twist::SharedPtr msg);
-    void imu_callback(const sensor_msgs::msg::Imu::SharedPtr msg);
-
+    void euler_callback(const geometry_msgs::msg::Vector3::SharedPtr msg);
     rclcpp::Subscription<geometry_msgs::msg::Twist>::SharedPtr subscription_;
-    rclcpp::Subscription<sensor_msgs::msg::Imu>::SharedPtr imu_sub_;
+    rclcpp::Subscription<geometry_msgs::msg::Vector3>::SharedPtr sub_euler_;
     rclcpp::Publisher<std_msgs::msg::Float32MultiArray>::SharedPtr publisher_;
 
-    // Constants for scaling
+    float current_roll_ = 0.0f;
+    float current_pitch_ = 0.0f;
+    float current_yaw_ = 0.0f;
+
     const float K_X = 500.0f;
     const float K_Y = 500.0f;
     const float K_Z = 500.0f;

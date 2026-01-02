@@ -48,8 +48,8 @@ class GateDetector:
         mask_green = cv2.inRange(hsv, self.colors['green_lower'], self.colors['green_upper'])
         
         # 3. Dilate untuk menggabungkan merah/hijau yang terputus-putus
-        mask_red_merged = cv2.dilate(mask_red, self.merge_kernel, iterations=1)
-        mask_green_merged = cv2.dilate(mask_green, self.merge_kernel, iterations=1)
+        mask_red_merged = cv2.dilate(mask_red, self.merge_kernel, iterations=2)
+        mask_green_merged = cv2.dilate(mask_green, self.merge_kernel, iterations=2)
         
         # 4. Find Best Posts
         red_post = self._find_largest_vertical_contour(mask_red_merged)
@@ -95,7 +95,7 @@ class GateDetector:
 
     # Kalau bagian kiri gate (merah) kelihatan lebih tinggi, bot di kiri
     # Kalau bagian kanan gate (hijau) kelihatan lebih tinggi, bot di kanan
-    def check_gate_alignment(red_bbox, green_bbox, height_threshold=5):
+    def check_gate_alignment(self, red_bbox, green_bbox, height_threshold=5):
         if red_bbox is None or green_bbox is None:
             return "unknown", 0.0
 

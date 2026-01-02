@@ -19,6 +19,7 @@ SerialManager::SerialManager() : Node("serial_manager") {
     pub_status_ = this->create_publisher<std_msgs::msg::Bool>("motors_status", 10);
     pub_depth_ = this->create_publisher<std_msgs::msg::Float32>("depth", 10);
     pub_imu_ = this->create_publisher<sensor_msgs::msg::Imu>("imu", 10);
+    pub_euler_ = this->create_publisher<geometry_msgs::msg::Vector3>("imu/euler", 10);
 
     timer_ = this->create_wall_timer(std::chrono::milliseconds(10), std::bind(&SerialManager::read_serial, this));
 }
@@ -67,6 +68,14 @@ void SerialManager::read_serial() {
                 imu_msg.angular_velocity.y = std::stof(tokens[7]);
                 imu_msg.angular_velocity.z = std::stof(tokens[8]);
                 pub_imu_->publish(imu_msg);
+
+                if (tokens.size() >= 12) {
+                    auto euler_msg = geometry_msgs::msg::Vector3();
+                    euler_msg.x = std::stof(tokens[10]); // Roll
+                    euler_msg.y = std::stof(tokens[9]);  // Pitch
+                    euler_msg.z = std::stof(tokens[11]); // Yaw
+                    pub_euler_->publish(euler_msg);
+                }
             }
         }
     }

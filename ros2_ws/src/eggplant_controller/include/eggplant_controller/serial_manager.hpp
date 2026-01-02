@@ -6,6 +6,7 @@
 #include <std_msgs/msg/bool.hpp>
 #include <std_msgs/msg/float32.hpp>
 #include <sensor_msgs/msg/imu.hpp>
+#include <geometry_msgs/msg/vector3.hpp>
 #include <string>
 #include <vector>
 #include <fcntl.h>
@@ -27,6 +28,7 @@ private:
     rclcpp::Publisher<std_msgs::msg::Bool>::SharedPtr pub_status_;
     rclcpp::Publisher<std_msgs::msg::Float32>::SharedPtr pub_depth_;
     rclcpp::Publisher<sensor_msgs::msg::Imu>::SharedPtr pub_imu_;
+    rclcpp::Publisher<geometry_msgs::msg::Vector3>::SharedPtr pub_euler_;
     rclcpp::TimerBase::SharedPtr timer_;
 };
 
