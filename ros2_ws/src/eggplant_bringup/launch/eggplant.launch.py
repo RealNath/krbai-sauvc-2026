@@ -18,7 +18,7 @@ def generate_launch_description():
     )
 
     mission_arg = DeclareLaunchArgument(
-        'mission', default_value='mission.yaml',
+        'mission', default_value='demo.yaml',
         description='Mission filename'
     )
 

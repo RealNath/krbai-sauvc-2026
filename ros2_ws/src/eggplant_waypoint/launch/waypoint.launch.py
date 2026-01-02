@@ -8,7 +8,7 @@ from launch.substitutions import LaunchConfiguration
 def generate_launch_description():
     # Declare the argument for the filename only
     mission_file_arg = DeclareLaunchArgument(
-        'mission', default_value='mission.yaml',
+        'mission', default_value='demo.yaml',
         description='Name of the mission file in the config folder'
     )
 

@@ -1,0 +1,15 @@
+thrusters_8_kinematics:
+  ros__parameters:
+    balancing: false
+    K_X: 200.0
+    K_Y: 200.0
+    K_Z: 200.0
+    K_ROLL: 200.0
+    K_PITCH: 200.0
+    K_YAW: 200.0
+    IDLE_RPM_H: 1000.0
+    IDLE_RPM_V: 1000.0
+    CLIP_RPM_H: 200.0
+    CLIP_RPM_V: 200.0
+    K_STAB_NUM: 200.0
+    K_STAB_DEN: 0.785

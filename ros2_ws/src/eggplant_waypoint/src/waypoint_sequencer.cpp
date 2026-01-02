@@ -85,24 +85,36 @@ private:
         auto elapsed = (this->now() - start_time_).seconds() * 1000.0;
 
         if (current.type == "wait_for_trigger") {
+            if (!waiting_for_trigger_) {
+                RCLCPP_INFO(this->get_logger(), "(%zu/%zu) Waiting for trigger at waypoint: %s", current_idx_+1, mission_.size(), current.name.c_str());
+            }
             waiting_for_trigger_ = true;
             publisher_->publish(geometry_msgs::msg::Twist()); 
         } 
         else if (current.type == "delay") {
+            static bool delay_started = false;
+            if (!delay_started) {
+                RCLCPP_INFO(this->get_logger(), "Delaying for %d ms at waypoint: %s", current.value, current.name.c_str());
+                delay_started = true;
+            }
             publisher_->publish(geometry_msgs::msg::Twist());
-            if (elapsed >= current.value) next_waypoint();
+            if (elapsed >= current.value) {
+                next_waypoint();
+                delay_started = false;
+            }
         } 
         else if (current.type == "move") {
             publisher_->publish(current.twist);
-            if (elapsed >= current.value) next_waypoint();
+            if (elapsed >= current.value) {
+                next_waypoint();
+            }
         }
     }
 
     void next_waypoint() {
+        RCLCPP_INFO(this->get_logger(), "(%zu/%zu) Completed waypoint: %s", current_idx_+1, mission_.size(), mission_[current_idx_].name.c_str());
         current_idx_++;
         start_time_ = this->now();
-        // Corrected format specifier for size_t
-        RCLCPP_INFO(this->get_logger(), "Moving to waypoint index: %zu", current_idx_);
     }
 
     std::vector<Waypoint> mission_;

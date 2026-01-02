@@ -32,6 +32,7 @@ void SerialManager::motor_callback(const std_msgs::msg::Float32MultiArray::Share
     for (size_t i = 0; i < 8; i++) cmd += "," + std::to_string(static_cast<int>(msg->data[i]));
     cmd += "\n";
     write(serial_port_, cmd.c_str(), cmd.length());
+    // RCLCPP_INFO(this->get_logger(), "Sent motor command: %s", cmd.c_str());
 }
 
 void SerialManager::read_serial() {
