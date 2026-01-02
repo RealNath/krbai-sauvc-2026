@@ -1,0 +1,23 @@
+{
+  "configurations": [
+    {
+      "browse": {
+        "databaseFilename": "${workspaceFolder}/.vscode/browse.vc.db",
+        "limitSymbolsToIncludedHeaders": false
+      },
+      "includePath": [
+        "/opt/ros/humble/include/**",
+        "/home/karol/ITB/URO/DAGONAUT/krbai-sauvc-2026/ros2_ws/src/eggplant_controller/include/**",
+        "/home/karol/ITB/URO/DAGONAUT/krbai-sauvc-2026/ros2_ws/src/eggplant_waypoint/include/**",
+        "/home/karol/ITB/URO/DAGONAUT/krbai-sauvc-2026/ros2_ws/src/thrusters_8/include/**",
+        "/usr/include/**"
+      ],
+      "name": "ros2",
+      "intelliSenseMode": "gcc-x64",
+      "compilerPath": "/usr/bin/gcc",
+      "cStandard": "gnu11",
+      "cppStandard": "c++17"
+    }
+  ],
+  "version": 4
+}
