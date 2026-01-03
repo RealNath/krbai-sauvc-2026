@@ -37,7 +37,7 @@
    ```bash
    source install/setup.bash
    ```
-4. Run the main node:
+4. Run the main node (choose the proper mission file):
    ```bash
    source /opt/ros/humble/setup.bash
    ros2 launch eggplant_bringup eggplant.launch.py port:=/dev/ttyACM0 mission:=mission.yaml
@@ -55,6 +55,7 @@
    sudo apt update && sudo apt install \
       git \
       curl \
+      make \
       picamera2 \
       minicom \
       python3 \
@@ -70,25 +71,40 @@
    ```bash
    git clone https://github.com/RealNath/krbai-sauvc-2026
    cd krbai-sauvc-2026
-   chmod +x run.sh build.sh attach.sh
    ```
 
-4. Run the camera service in the background,
+4. Run the ROS2 docker container,
    ```bash
-   python3 scripts/camera_service.py --stream --log &
+   make
    ```
-   You may omit the `--stream` flag if no live video stream to ground station is needed (recommended when actual test in water is done) and the `--log` if no video logging is needed (not recommended)
+   All the modifiable Makefile flag is as follow,
+   ```bash
+   ESP32_SRC               : esp32 firmware source code location (default: ./esp32_firmware)
+   ESP32_PORT              : esp32 port connected to Raspberry Pi (default: /dev/ttyACM0)
+   ESP32_FQBN              : esp32 board official name (default: esp32:esp32:esp32s3)
+   ESP32_BAUDRATE          : esp32 board baud rate (default: 115200)
+   ROS2_WS                 : ros2 workspace location (default: ./ros2_ws)
+   ROS2_CONTAINER_TAG      : ros2 docker container tag (default: ros-humble-core-dev)
+   MISSION_FILE            : ros2 waypoint mission file (default: mission.yaml)
+   SCRIPT_SRC              : utility script source code location (default: ./scripts)
+   CAMERA_SERVICE_OPTION   : python flask camera service option (default: --log)
+   ```
 
-5. Build and run the ROS2 docker image (make sure to modify the parameter `mission:=mission.yaml` inside the `raspi-entrypoint.sh` into the correct waypoint mission file),
+
+5. (Optional) Run the Raspberry Pi camera web server,
    ```bash
-   ./build.sh && ./run.sh &
+   make webserver
    ```
-   Now all ROS2 functionality should start and robot will start running autonomously
+   Set the option of python camera service action using flag `--stream` to enable stream, and `--log` to enable logging (default: logging enabled and stream disabled). For example:
+   ```bash
+   make webserver CAMERA_SERVICE_OPTION="--stream --log"
+   make webserver CAMERA_SERVICE_OPTION="--stream"
+   ```
+
 
 6. (Optional) ssh into the Raspberry Pi in another terminal then attach to the ROS2 docker container,
    ```bash
-   cd krbai-sauvc-2026
-   ./attach.sh
+   make attach
    ```
    Now you can do regular ROS2 command to monitor the eggplant activity, for example,
    ```bash
@@ -97,11 +113,23 @@
    ros2 topic echo /sauvc/motors_vel > motor.log &
    ```
 
-7. (Optional) ssh into the Raspberry Pi in another terminal and monitor the ESP32 serial monitor using `minicom`,
+7. (Optional) compile and upload new ESP32 firmware (make sure the .ino file location is correct)
    ```bash
-   minicom -D /dev/ttyACM0
+   make esp32-build
    ```
-   Press `CTRL + A` then `q` to exit minicom.
+
+
+8. (Optional) view the output of the esp32 serial monitor,
+   ```bash
+   make esp32-monitor
+   ```
+   Press `CTRL + C` to exit.
+
+
+9. (Optional) hard reset the esp32 to boot from bootloader,
+   ```bash
+   make esp32-reset
+   ```
 
 
 
