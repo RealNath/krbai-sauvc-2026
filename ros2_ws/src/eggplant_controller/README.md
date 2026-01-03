@@ -43,10 +43,10 @@ Melakukan kalkulasi kinematika untuk 8 thruster berdasarkan input Twist. Node in
 **Algoritma Kinematika:**
 
 Motor horizontal (1-4):
-- Motor 1 (Front Right): `x - y - yaw`
-- Motor 2 (Front Left): `x + y + yaw`
-- Motor 3 (Back Right): `x + y - yaw`
-- Motor 4 (Back Left): `x - y + yaw`
+- Motor 1 (Front Right): `x - y + yaw`
+- Motor 2 (Front Left): `x + y - yaw`
+- Motor 3 (Back Right): `-x - y + yaw` (back motors push backward at idle)
+- Motor 4 (Back Left): `-x + y - yaw` (back motors push backward at idle)
 
 Motor vertikal (5-8):
 - Motor 5 (Up Front Right): `-z + roll + pitch`
@@ -71,7 +71,7 @@ Mengelola komunikasi serial dua arah dengan mikrokontroler:
 - `imu` (sensor_msgs/msg/Imu)
 
 **Parameter:**
-- `port`: Alamat port serial (default: `/dev/ttyUSB0`)
+- `port`: Alamat port serial (default: `/dev/ttyACM0`)
 
 **Protokol Serial:**
 

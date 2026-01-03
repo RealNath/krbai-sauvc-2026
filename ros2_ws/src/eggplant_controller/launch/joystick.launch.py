@@ -2,6 +2,7 @@ import os
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch_ros.actions import Node
+from launch_ros.actions import PushRosNamespace
 
 def generate_launch_description():
     
@@ -25,6 +26,7 @@ def generate_launch_description():
     )
     
     return LaunchDescription([
+        PushRosNamespace('sauvc'),
         joy_node,
         joy_to_twist_node,
     ])
