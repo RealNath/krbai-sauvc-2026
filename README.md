@@ -90,7 +90,8 @@
    ```
    All the modifiable Makefile flag is as follow,
    ```
-   ESP32_SRC               : esp32 firmware source code location (default: ./esp32_firmware)
+   ESP32_SRC               : esp32 firmware source code root location (default: ./esp32_firmware)
+   ESP32_TARGET            : esp32 firmware target directory for compilation (default: main_controller)
    ESP32_PORT              : esp32 port connected to Raspberry Pi (default: /dev/ttyACM0)
    ESP32_FQBN              : esp32 board official name (default: esp32:esp32:esp32s3)
    ESP32_BAUDRATE          : esp32 board baud rate (default: 115200)

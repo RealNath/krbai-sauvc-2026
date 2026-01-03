@@ -3,6 +3,7 @@ all: run
 .PHONY: all esp32-build esp32-monitor esp32-reset webserver clean-all-log build run attach
 
 ESP32_SRC ?= ./esp32_firmware
+ESP32_TARGET ?= main_controller
 ESP32_PORT ?= /dev/ttyACM0
 ESP32_FQBN ?= esp32:esp32:esp32s3
 ESP32_BAUDRATE ?= 115200
@@ -20,7 +21,7 @@ esp32-build:
 	arduino-cli compile \
 		--fqbn $(ESP32_FQBN) \
 		--output-dir $(ESP32_SRC)/build \
-		$(ESP32_SRC)/main_controller/
+		$(ESP32_SRC)/$(ESP32_TARGET)/
 
 	arduino-cli upload \
 		--fqbn $(ESP32_FQBN) \
