@@ -112,7 +112,7 @@ class Logger:
 Streamer class to stream frame in HTTP protocol
 """
 class Streamer:
-    def __init__(self, target_port):
+    def __init__(self, target_port, do_stream):
         self.app = Flask(__name__)
         self.target_port = target_port
         self.frame = None
@@ -121,15 +121,19 @@ class Streamer:
         # Root route
         @self.app.route("/")
         def root():
-            return redirect("/live")
+            if do_stream:
+                return redirect("/live")
+            return redirect("/recording")
 
         # Live stream route
         @self.app.route("/live")
         def live_video():
-            return Response(
-                self.generate_image_response(),
-                mimetype="multipart/x-mixed-replace; boundary=frame"
-            )
+            if do_stream:
+                return Response(
+                    self.generate_image_response(),
+                    mimetype="multipart/x-mixed-replace; boundary=frame"
+                )
+            return redirect("/recording")
 
         # Recording data route
         @self.app.route("/recording")
@@ -184,8 +188,8 @@ Camera service which will run indefinitely after system boot on raspberry pi
 class CameraService:
     def __init__(self, do_log, do_stream):
         self.camera = Camera(width=1024, height=768, fps=10)
-        self.logger = (Logger(self.camera, max_vid_duration=30) if do_log else None)
-        self.streamer = (Streamer(target_port=1234) if do_stream else None)
+        self.logger = (Logger(camera=self.camera, max_vid_duration=30) if do_log else None)
+        self.streamer = Streamer(target_port=1234, do_stream=do_stream)
         self.gate_detector = GateDetector()
         self.flare_detector = FlareDetector()
 
@@ -243,5 +247,3 @@ if __name__ == "__main__":
         print("[INFO] Interrupted, shutting down...")
         if args.log and camera_service.logger.video_writer:
             camera_service.logger.video_writer.release()
-
-    

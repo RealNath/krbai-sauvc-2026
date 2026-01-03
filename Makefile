@@ -1,6 +1,6 @@
 all: run
 
-.PHONY: all esp32-build esp32-monitor esp32-reset webserver build run attach
+.PHONY: all esp32-build esp32-monitor esp32-reset webserver clean-all-log build run attach
 
 ESP32_SRC ?= ./esp32_firmware
 ESP32_PORT ?= /dev/ttyACM0
@@ -52,6 +52,9 @@ webserver:
 	@echo -n "[Makefile]: "
 	python3 $(SCRIPT_SRC)/camera_service.py $(CAMERA_SERVICE_OPTION)
 
+clean-all-log:
+	@echo -n "[Makefile]: "
+	-rm -f ~/robot-log/video/*
 
 build:
 	@echo -n "[Makefile]: "
