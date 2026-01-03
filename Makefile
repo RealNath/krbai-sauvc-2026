@@ -18,6 +18,8 @@ CAMERA_SERVICE_OPTION ?= --log
 
 esp32-build:
 	@echo -n "[Makefile]: "
+	rm $(ESP32_SRC)/build/*
+	
 	arduino-cli compile \
 		--fqbn $(ESP32_FQBN) \
 		--output-dir $(ESP32_SRC)/build \
