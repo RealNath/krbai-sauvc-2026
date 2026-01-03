@@ -19,7 +19,7 @@ CAMERA_SERVICE_OPTION ?= --log
 esp32-build:
 	@echo -n "[Makefile]: "
 	rm $(ESP32_SRC)/build/*
-	
+
 	arduino-cli compile \
 		--fqbn $(ESP32_FQBN) \
 		--output-dir $(ESP32_SRC)/build \
@@ -46,7 +46,7 @@ esp32-reset:
 		echo "Port $(ESP32_PORT) is busy, close serial monitor or other process which uses this port first before resetting."; \
 		exit 1; \
 	fi; \
-	esptool --chip esp32 \
+	esptool --chip esp32-s3 \
 		--port $(ESP32_PORT) \
 		--no-stub flash_id
 
