@@ -6,9 +6,9 @@ class JoyToTwistNode : public rclcpp::Node {
 public:
     JoyToTwistNode() : Node("joy_to_twist") {
         subscription_ = this->create_subscription<sensor_msgs::msg::Joy>(
-            "/joy", 10, std::bind(&JoyToTwistNode::joy_callback, this, std::placeholders::_1));
+            "joy", 10, std::bind(&JoyToTwistNode::joy_callback, this, std::placeholders::_1));
         
-        publisher_ = this->create_publisher<geometry_msgs::msg::Twist>("/cmd_vel", 10);
+        publisher_ = this->create_publisher<geometry_msgs::msg::Twist>("cmd_vel", 10);
     }
 
 private:

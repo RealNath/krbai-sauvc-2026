@@ -1,4 +1,4 @@
-thrusters_8_kinematics:
+/sauvc/thrusters_8_kinematics:
   ros__parameters:
     balancing: false
     K_X: 200.0
@@ -7,7 +7,7 @@ thrusters_8_kinematics:
     K_ROLL: 200.0
     K_PITCH: 200.0
     K_YAW: 200.0
-    IDLE_RPM_H: 1200.0
+    IDLE_RPM_H: 1000.0
     IDLE_RPM_V: 1200.0
     CLIP_RPM_H: 200.0
     CLIP_RPM_V: 200.0

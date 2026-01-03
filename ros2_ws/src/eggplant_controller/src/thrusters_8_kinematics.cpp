@@ -29,6 +29,8 @@ Thrusters8Kinematics::Thrusters8Kinematics() : Node("thrusters_8_kinematics") {
     K_STAB_DEN = this->get_parameter("K_STAB_DEN").as_double();
     K_STAB = K_STAB_NUM / K_STAB_DEN;
 
+    RCLCPP_INFO(this->get_logger(), "Using IDLE_RPM_H: %.2f", IDLE_RPM_H);
+
     sub_twist_ = this->create_subscription<geometry_msgs::msg::Twist>(
         "cmd_vel", 10, std::bind(&Thrusters8Kinematics::twist_callback, this, std::placeholders::_1));
     sub_imu_ = this->create_subscription<sensor_msgs::msg::Imu>(
@@ -64,7 +66,16 @@ void Thrusters8Kinematics::twist_callback(const geometry_msgs::msg::Twist::Share
     auto out_msg = std_msgs::msg::Float32MultiArray();
     out_msg.data.resize(8);
 
-    float h[4] = {x-y-yaw, x+y+yaw, x+y-yaw, x-y+yaw};
+    // Motor arrangement (X-configuration at 45° angles):
+    // h[0] = Motor 1 Front Right: forward - left + yaw_ccw
+    // h[1] = Motor 2 Front Left:  forward + left - yaw_ccw  
+    // h[2] = Motor 3 Back Right:  -forward - left + yaw_ccw (back motors push backward at idle)
+    // h[3] = Motor 4 Back Left:   -forward + left - yaw_ccw (back motors push backward at idle)
+    // v[0] = Motor 5 Up Front Right: -z + roll + pitch
+    // v[1] = Motor 6 Up Front Left:  -z - roll + pitch
+    // v[2] = Motor 7 Up Back Right:  -z + roll - pitch
+    // v[3] = Motor 8 Up Back Left:   -z - roll - pitch
+    float h[4] = {x-y+yaw, x+y-yaw, -x-y+yaw, -x+y-yaw};
     float v[4] = {-z+roll+pitch, -z-roll+pitch, -z+roll-pitch, -z-roll-pitch};
 
     for (int i = 0; i < 4; i++) {
