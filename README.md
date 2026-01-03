@@ -77,9 +77,21 @@
    ```bash
    make
    ```
+   All make recipe is as follow,
+   ```
+   esp32-build    : recompile and upload esp32 firmware in the esp32 firmware source code
+   esp32-monitor  : view the output of esp32 serial monitor
+   esp32-reset    : hard reset the esp32 (may fail if the connected port is used)
+   webserver      : launch the webserver service for ground station web browser
+   clean-all-log  : delete all logged videos (careful)
+   build          : build the ROS2 docker container 
+   run            : build and run the ROS2 docker container (default recipe)
+   attach         : attach to the running ROS2 docker container
+   ```
    All the modifiable Makefile flag is as follow,
-   ```bash
-   ESP32_SRC               : esp32 firmware source code location (default: ./esp32_firmware)
+   ```
+   ESP32_SRC               : esp32 firmware source code root location (default: ./esp32_firmware)
+   ESP32_TARGET            : esp32 firmware target directory for compilation (default: main_controller)
    ESP32_PORT              : esp32 port connected to Raspberry Pi (default: /dev/ttyACM0)
    ESP32_FQBN              : esp32 board official name (default: esp32:esp32:esp32s3)
    ESP32_BAUDRATE          : esp32 board baud rate (default: 115200)

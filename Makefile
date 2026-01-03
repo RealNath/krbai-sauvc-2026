@@ -1,8 +1,9 @@
 all: run
 
-.PHONY: all esp32-build esp32-monitor esp32-reset webserver build run attach
+.PHONY: all esp32-build esp32-monitor esp32-reset webserver clean-all-log build run attach
 
 ESP32_SRC ?= ./esp32_firmware
+ESP32_TARGET ?= main_controller
 ESP32_PORT ?= /dev/ttyACM0
 ESP32_FQBN ?= esp32:esp32:esp32s3
 ESP32_BAUDRATE ?= 115200
@@ -17,10 +18,12 @@ CAMERA_SERVICE_OPTION ?= --log
 
 esp32-build:
 	@echo -n "[Makefile]: "
+	rm $(ESP32_SRC)/build/*
+
 	arduino-cli compile \
 		--fqbn $(ESP32_FQBN) \
 		--output-dir $(ESP32_SRC)/build \
-		$(ESP32_SRC)/main_controller/
+		$(ESP32_SRC)/$(ESP32_TARGET)/
 
 	arduino-cli upload \
 		--fqbn $(ESP32_FQBN) \
@@ -43,7 +46,7 @@ esp32-reset:
 		echo "Port $(ESP32_PORT) is busy, close serial monitor or other process which uses this port first before resetting."; \
 		exit 1; \
 	fi; \
-	esptool --chip esp32 \
+	esptool --chip esp32-s3 \
 		--port $(ESP32_PORT) \
 		--no-stub flash_id
 
@@ -52,6 +55,9 @@ webserver:
 	@echo -n "[Makefile]: "
 	python3 $(SCRIPT_SRC)/camera_service.py $(CAMERA_SERVICE_OPTION)
 
+clean-all-log:
+	@echo -n "[Makefile]: "
+	-rm -f ~/robot-log/video/*
 
 build:
 	@echo -n "[Makefile]: "
