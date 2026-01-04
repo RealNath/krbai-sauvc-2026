@@ -15,6 +15,26 @@ Thrusters8Kinematics::Thrusters8Kinematics() : Node("thrusters_8_kinematics") {
     this->declare_parameter("K_STAB_NUM", 200.0f);
     this->declare_parameter("K_STAB_DEN", 0.785f); // ~45 deg in rad
 
+    // Motor index parameters
+    // Default configuration:
+    // Motor arrangement (X-configuration at 45° angles):
+    // h[0] = Motor 1 Front Right: forward - left + yaw_ccw
+    // h[1] = Motor 2 Front Left:  forward + left - yaw_ccw  
+    // h[2] = Motor 3 Back Right:  -forward - left + yaw_ccw (back motors push backward at idle)
+    // h[3] = Motor 4 Back Left:   -forward + left - yaw_ccw (back motors push backward at idle)
+    // v[0] = Motor 5 Up Front Right: -z + roll + pitch
+    // v[1] = Motor 6 Up Front Left:  -z - roll + pitch
+    // v[2] = Motor 7 Up Back Right:  -z + roll - pitch
+    // v[3] = Motor 8 Up Back Left:   -z - roll - pitch
+    this->declare_parameter("IDX_H_FR", 0);
+    this->declare_parameter("IDX_H_FL", 1);
+    this->declare_parameter("IDX_H_BR", 2);
+    this->declare_parameter("IDX_H_BL", 3);
+    this->declare_parameter("IDX_V_FR", 4);
+    this->declare_parameter("IDX_V_FL", 5);
+    this->declare_parameter("IDX_V_BR", 6);
+    this->declare_parameter("IDX_V_BL", 7);
+
     K_X = this->get_parameter("K_X").as_double();
     K_Y = this->get_parameter("K_Y").as_double();
     K_Z = this->get_parameter("K_Z").as_double();
@@ -29,7 +49,15 @@ Thrusters8Kinematics::Thrusters8Kinematics() : Node("thrusters_8_kinematics") {
     K_STAB_DEN = this->get_parameter("K_STAB_DEN").as_double();
     K_STAB = K_STAB_NUM / K_STAB_DEN;
 
-    RCLCPP_INFO(this->get_logger(), "Using IDLE_RPM_H: %.2f", IDLE_RPM_H);
+    // Motor index parameters
+    motor_idxs[0] = this->get_parameter("IDX_H_FR").as_int();
+    motor_idxs[1] = this->get_parameter("IDX_H_FL").as_int();
+    motor_idxs[2] = this->get_parameter("IDX_H_BR").as_int();
+    motor_idxs[3] = this->get_parameter("IDX_H_BL").as_int();
+    motor_idxs[4] = this->get_parameter("IDX_V_FR").as_int();
+    motor_idxs[5] = this->get_parameter("IDX_V_FL").as_int();
+    motor_idxs[6] = this->get_parameter("IDX_V_BR").as_int();
+    motor_idxs[7] = this->get_parameter("IDX_V_BL").as_int();
 
     sub_twist_ = this->create_subscription<geometry_msgs::msg::Twist>(
         "cmd_vel", 10, std::bind(&Thrusters8Kinematics::twist_callback, this, std::placeholders::_1));
@@ -66,22 +94,19 @@ void Thrusters8Kinematics::twist_callback(const geometry_msgs::msg::Twist::Share
     auto out_msg = std_msgs::msg::Float32MultiArray();
     out_msg.data.resize(8);
 
-    // Motor arrangement (X-configuration at 45° angles):
-    // h[0] = Motor 1 Front Right: forward - left + yaw_ccw
-    // h[1] = Motor 2 Front Left:  forward + left - yaw_ccw  
-    // h[2] = Motor 3 Back Right:  -forward - left + yaw_ccw (back motors push backward at idle)
-    // h[3] = Motor 4 Back Left:   -forward + left - yaw_ccw (back motors push backward at idle)
-    // v[0] = Motor 5 Up Front Right: -z + roll + pitch
-    // v[1] = Motor 6 Up Front Left:  -z - roll + pitch
-    // v[2] = Motor 7 Up Back Right:  -z + roll - pitch
-    // v[3] = Motor 8 Up Back Left:   -z - roll - pitch
     float h[4] = {x-y+yaw, x+y-yaw, -x-y+yaw, -x+y-yaw};
     float v[4] = {-z+roll+pitch, -z-roll+pitch, -z+roll-pitch, -z-roll-pitch};
 
+    // Assign horizontal thruster speeds using motor indices
     for (int i = 0; i < 4; i++) {
-        out_msg.data[i] = IDLE_RPM_H + std::max(-CLIP_RPM_H, std::min(CLIP_RPM_H, h[i]));
-        out_msg.data[i+4] = IDLE_RPM_V + std::max(-CLIP_RPM_V, std::min(CLIP_RPM_V, v[i]));
+        out_msg.data[motor_idxs[i]] = IDLE_RPM_H + std::max(-CLIP_RPM_H, std::min(CLIP_RPM_H, h[i]));
     }
+    
+    // Assign vertical thruster speeds using motor indices
+    for (int i = 0; i < 4; i++) {
+        out_msg.data[motor_idxs[i+4]] = IDLE_RPM_V + std::max(-CLIP_RPM_V, std::min(CLIP_RPM_V, v[i]));
+    }
+    
     pub_motors_->publish(out_msg);
 }
 

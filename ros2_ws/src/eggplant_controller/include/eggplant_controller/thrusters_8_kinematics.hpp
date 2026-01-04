@@ -28,6 +28,17 @@ private:
     float IDLE_RPM_H, IDLE_RPM_V, CLIP_RPM_H, CLIP_RPM_V;
     float K_STAB_NUM, K_STAB_DEN;
     float K_STAB = K_STAB_NUM / K_STAB_DEN;
+
+    int motor_idxs[8] = {
+        0, // IDX_H_FR
+        1, // IDX_H_FL
+        2, // IDX_H_BR
+        3, // IDX_H_BL
+        4, // IDX_V_FR
+        5, // IDX_V_FL
+        6, // IDX_V_BR
+        7  // IDX_V_BL
+    };
 };
 
 #endif
