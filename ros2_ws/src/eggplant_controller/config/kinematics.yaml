@@ -13,3 +13,11 @@
     CLIP_RPM_V: 200.0
     K_STAB_NUM: 200.0
     K_STAB_DEN: 0.785
+    IDX_H_FR: 0
+    IDX_H_FL: 1
+    IDX_H_BR: 2
+    IDX_H_BL: 3
+    IDX_V_FR: 4
+    IDX_V_FL: 5
+    IDX_V_BR: 6
+    IDX_V_BL: 7
